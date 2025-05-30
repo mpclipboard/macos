@@ -40,8 +40,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApp.terminate), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(AppDelegate.quit), keyEquivalent: "q"))
         statusItem.menu = menu
+    }
+
+    @objc
+    func quit() {
+        shared_clipboard_stop_thread();
+        print("Quitting...");
+        NSApp.terminate(self);
     }
 
     func startClipboardPolling() {
@@ -54,7 +61,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self);
                         shared_clipboard_send(ptr);
                     };
-                    print("Copied: \(copiedText)")
                 }
             }
         }
@@ -68,7 +74,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let connectivityPtr = output.connectivity {
                 let connectivity = connectivityPtr.pointee == true;
                 free(connectivityPtr);
-                print("Connectivity: \(connectivity)");
                 if connectivity {
                     trayButton?.image = greenImage;
                 } else {
@@ -78,7 +83,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let textPtr = output.text {
                 let text = String(cString: output.text);
                 free(output.text);
-                print("Text: \(text)");
+                let pasteboard = NSPasteboard.general;
+                pasteboard.declareTypes([.string], owner: nil)
+                pasteboard.setString(text, forType: .string);
             }
         })
     }
