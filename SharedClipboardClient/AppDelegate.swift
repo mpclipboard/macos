@@ -25,8 +25,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         buildMenu()
         startClipboardPolling()
     
-        shared_clipboard_setup();
-        let config = shared_clipboard_config_read_from_xdg_cofig_dir();
+        shared_clipboard_setup()
+        let config = shared_clipboard_config_read_from_xdg_cofig_dir()
+        if config == nil {
+            fputs("failed to read config, exiting...", stderr)
+            NSApp.terminate(self)
+        }
         shared_clipboard_start_thread(config)
 
         startSharedClipboardThreadPolling()
@@ -35,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func buildMenu() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = redImage;
+            button.image = redImage
             trayButton = button
         }
 
@@ -46,9 +50,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc
     func quit() {
-        shared_clipboard_stop_thread();
-        print("Quitting...");
-        NSApp.terminate(self);
+        shared_clipboard_stop_thread()
+        print("Quitting...")
+        NSApp.terminate(self)
     }
 
     func startClipboardPolling() {
@@ -58,9 +62,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 self.lastChangeCount = pasteboard.changeCount
                 if let copiedText = pasteboard.string(forType: .string) {
                     copiedText.withCString { cString in
-                        let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self);
-                        shared_clipboard_send(ptr);
-                    };
+                        let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self)
+                        shared_clipboard_send(ptr)
+                    }
                 }
             }
         }
@@ -70,22 +74,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func startSharedClipboardThreadPolling() {
         pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [self] _ in
-            let output = shared_clipboard_poll();
+            let output = shared_clipboard_poll()
             if let connectivityPtr = output.connectivity {
-                let connectivity = connectivityPtr.pointee == true;
-                free(connectivityPtr);
+                let connectivity = connectivityPtr.pointee == true
+                free(connectivityPtr)
                 if connectivity {
-                    trayButton?.image = greenImage;
+                    trayButton?.image = greenImage
                 } else {
-                    trayButton?.image = redImage;
+                    trayButton?.image = redImage
                 }
             }
             if let textPtr = output.text {
-                let text = String(cString: output.text);
-                free(output.text);
-                let pasteboard = NSPasteboard.general;
+                let text = String(cString: output.text)
+                free(output.text)
+                let pasteboard = NSPasteboard.general
                 pasteboard.declareTypes([.string], owner: nil)
-                pasteboard.setString(text, forType: .string);
+                pasteboard.setString(text, forType: .string)
             }
         })
     }
