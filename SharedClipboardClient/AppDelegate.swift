@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         startClipboardPolling()
     
         shared_clipboard_setup()
-        let config = shared_clipboard_config_read_from_xdg_cofig_dir()
+        let config = shared_clipboard_config_read_from_xdg_config_dir()
         if config == nil {
             fputs("failed to read config, exiting...", stderr)
             NSApp.terminate(self)
@@ -85,8 +85,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
             if let textPtr = output.text {
-                let text = String(cString: output.text)
-                free(output.text)
+                let text = String(cString: textPtr)
+                free(textPtr)
                 let pasteboard = NSPasteboard.general
                 pasteboard.declareTypes([.string], owner: nil)
                 pasteboard.setString(text, forType: .string)
