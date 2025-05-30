@@ -17,6 +17,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         buildMenu()
         startClipboardPolling()
+    
+        shared_clipboard_setup();
+        let config = shared_clipboard_config_read_from_xdg_cofig_dir();
+        shared_clipboard_start_thread(config)
     }
 
     func buildMenu() {
