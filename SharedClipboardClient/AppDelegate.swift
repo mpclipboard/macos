@@ -9,7 +9,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var clipboardTimer: Timer?
     var lastChangeCount: Int = NSPasteboard.general.changeCount
-
+    var pollingTimer: Timer?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Hide Dock icon
@@ -21,6 +21,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         shared_clipboard_setup();
         let config = shared_clipboard_config_read_from_xdg_cofig_dir();
         shared_clipboard_start_thread(config)
+
+        startSharedClipboardThreadPolling()
     }
 
     func buildMenu() {
@@ -52,4 +54,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         RunLoop.main.add(clipboardTimer!, forMode: .common)
     }
 
+    func startSharedClipboardThreadPolling() {
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+            let output = shared_clipboard_poll();
+            if let connectivityPtr = output.connectivity {
+                let connectivity = connectivityPtr.pointee == true;
+                free(connectivityPtr);
+                print("Connectivity: \(connectivity)");
+            }
+            if let textPtr = output.text {
+                let text = String(cString: output.text);
+                free(output.text);
+                print("Text: \(text)");
+            }
+        })
+    }
 }
