@@ -40,6 +40,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if pasteboard.changeCount != self.lastChangeCount {
                 self.lastChangeCount = pasteboard.changeCount
                 if let copiedText = pasteboard.string(forType: .string) {
+                    copiedText.withCString { cString in
+                        let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self);
+                        shared_clipboard_send(ptr);
+                    };
                     print("Copied: \(copiedText)")
                 }
             }
