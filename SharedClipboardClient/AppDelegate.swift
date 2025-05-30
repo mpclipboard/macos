@@ -10,10 +10,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var clipboardTimer: Timer?
     var lastChangeCount: Int = NSPasteboard.general.changeCount
     var pollingTimer: Timer?
+    var trayButton: NSStatusBarButton?
+
+    var redImage: NSImage?
+    var greenImage: NSImage?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Hide Dock icon
         NSApp.setActivationPolicy(.accessory)
+
+        redImage = NSImage(named: "red")
+        greenImage = NSImage(named: "green")
 
         buildMenu()
         startClipboardPolling()
@@ -28,7 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func buildMenu() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Keyboard Monitor")
+            button.image = redImage;
+            trayButton = button
         }
 
         let menu = NSMenu()
@@ -55,12 +63,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func startSharedClipboardThreadPolling() {
-        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
+        pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [self] _ in
             let output = shared_clipboard_poll();
             if let connectivityPtr = output.connectivity {
                 let connectivity = connectivityPtr.pointee == true;
                 free(connectivityPtr);
                 print("Connectivity: \(connectivity)");
+                if connectivity {
+                    trayButton?.image = greenImage;
+                } else {
+                    trayButton?.image = redImage;
+                }
             }
             if let textPtr = output.text {
                 let text = String(cString: output.text);
