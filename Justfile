@@ -21,3 +21,5 @@ base_release_url := generic_gh_repo_url + "/releases/download/aarch64-apple-darw
 ci-build:
     wget -q "{{base_release_url}}/libshared_clipboard_client_generic.a" -O libshared_clipboard_client_generic.a
     @just build-release "$PWD/libshared_clipboard_client_generic.a"
+    cd build/Release && zip -r SharedClipboardClient.app.zip SharedClipboardClient.app
+    mv build/Release/SharedClipboardClient.app.zip .

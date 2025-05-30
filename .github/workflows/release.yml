@@ -1,0 +1,31 @@
+name: release
+
+on:
+  push:
+    branches: [ master ]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: extractions/setup-just@v3
+
+      # - run: find /Applications -name "Xcode*.app" -type d
+      - run: sudo xcode-select -switch /Applications/Xcode_16.2.app/Contents/Developer
+      - run: just ci-build
+
+      - name: release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          removeArtifacts: true
+          tag: latest
+          artifacts: SharedClipboardClient.app.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
