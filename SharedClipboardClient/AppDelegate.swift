@@ -1,0 +1,47 @@
+import Cocoa
+import Carbon
+import SwiftUI
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    var statusItem: NSStatusItem!
+    var settingsWindow: NSWindow!
+    var monitor: Any?
+
+    var clipboardTimer: Timer?
+    var lastChangeCount: Int = NSPasteboard.general.changeCount
+
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Hide Dock icon
+        NSApp.setActivationPolicy(.accessory)
+
+        buildMenu()
+        startClipboardPolling()
+    }
+
+    func buildMenu() {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        if let button = statusItem.button {
+            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Keyboard Monitor")
+        }
+
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApp.terminate), keyEquivalent: "q"))
+        statusItem.menu = menu
+    }
+
+    func startClipboardPolling() {
+        clipboardTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            let pasteboard = NSPasteboard.general
+            if pasteboard.changeCount != self.lastChangeCount {
+                self.lastChangeCount = pasteboard.changeCount
+                if let copiedText = pasteboard.string(forType: .string) {
+                    print("Copied: \(copiedText)")
+                }
+            }
+        }
+
+        RunLoop.main.add(clipboardTimer!, forMode: .common)
+    }
+
+}
