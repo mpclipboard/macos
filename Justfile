@@ -23,3 +23,6 @@ ci-build:
     @just build-release "$PWD/libshared_clipboard_client_generic.a"
     cd build/Release && zip -r SharedClipboardClient.app.zip SharedClipboardClient.app
     mv build/Release/SharedClipboardClient.app.zip .
+
+sync-header:
+    wget -q "https://raw.githubusercontent.com/iliabylich/shared-clipboard-client-generic/refs/heads/master/shared-clipboard-client-generic.h" -O SharedClipboardClient/shared-clipboard-client-generic.h
