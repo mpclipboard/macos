@@ -16,13 +16,20 @@ run-release:
     @just run Release
 
 generic_gh_repo_url := "https://github.com/iliabylich/shared-clipboard-client-generic"
-base_release_url := generic_gh_repo_url + "/releases/download/aarch64-apple-darwin-latest"
+base_release_url := generic_gh_repo_url + "/releases/download/latest"
+download-artifact filename out:
+    wget -q "{{base_release_url}}/{{filename}}" -O {{out}}
 
 ci-build:
-    wget -q "{{base_release_url}}/libshared_clipboard_client_generic.a" -O libshared_clipboard_client_generic.a
-    @just build-release "$PWD/libshared_clipboard_client_generic.a"
+    rm -f aarch64-apple-darwin.tar.gz
+    @just download-artifact aarch64-apple-darwin.tar.gz aarch64-apple-darwin.tar.gz
+    rm -rf shared-clipboard-generic-client
+    tar xvzf aarch64-apple-darwin.tar.gz
+
+    @just build-release shared-clipboard-generic-client/libshared_clipboard_client_generic.a
+
     cd build/Release && zip -r SharedClipboardClient.app.zip SharedClipboardClient.app
     mv build/Release/SharedClipboardClient.app.zip .
 
 sync-header:
-    wget -q "https://raw.githubusercontent.com/iliabylich/shared-clipboard-client-generic/refs/heads/master/shared-clipboard-client-generic.h" -O SharedClipboardClient/shared-clipboard-client-generic.h
+    @just download-artifact shared-clipboard-client-generic.h SharedClipboardClient/shared-clipboard-client-generic.h
