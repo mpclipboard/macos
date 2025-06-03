@@ -9,11 +9,6 @@
       "filename" : "red-32x32.png",
       "idiom" : "universal",
       "scale" : "2x"
-    },
-    {
-      "filename" : "red-64x64.png",
-      "idiom" : "universal",
-      "scale" : "3x"
     }
   ],
   "info" : {
