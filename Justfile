@@ -24,4 +24,8 @@ ci-build:
     cd build/Release && zip -r mpclipboard.app.zip mpclipboard.app
     mv build/Release/mpclipboard.app.zip .
 
-
+clean:
+    rm -rf build
+    rm -f mpclipboard/mpclipboard-generic-client.h
+    rm -rf aarch64-apple-darwin.tar.gz mpclipboard-generic-client
+    rm -f mpclipboard.app.zip
