@@ -1,7 +1,7 @@
-sync-header:
+sync:
+    rm -f mpclipboard/mpclipboard-generic-client.h
     @just download mpclipboard-generic-client.h mpclipboard/mpclipboard-generic-client.h
 
-sync-lib:
     rm -f aarch64-apple-darwin.tar.gz
     @just download aarch64-apple-darwin.tar.gz aarch64-apple-darwin.tar.gz
     rm -rf mpclipboard-generic-client
@@ -18,7 +18,7 @@ download filename out:
     wget -q "{{gh_repo_url}}/releases/download/latest/{{filename}}" -O {{out}}
 
 ci-build:
-    @just sync-lib
+    @just sync
     @just build Release
 
     cd build/Release && zip -r mpclipboard.app.zip mpclipboard.app

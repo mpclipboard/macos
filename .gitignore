@@ -4,3 +4,4 @@ xcuserdata
 *.tar.gz
 mpclipboard-generic-client
 mpclipboard.app.zip
+mpclipboard/mpclipboard-generic-client.h
