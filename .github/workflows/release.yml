@@ -27,5 +27,5 @@ jobs:
           artifactErrorsFailBuild: true
           removeArtifacts: true
           tag: latest
-          artifacts: SharedClipboardClient.app.zip
+          artifacts: mpclipboard.app.zip
           token: ${{ secrets.GITHUB_TOKEN }}

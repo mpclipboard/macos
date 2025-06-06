@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct SharedClipboardClientApp: App {
+struct MPClipboardApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

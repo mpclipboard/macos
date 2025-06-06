@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		098B20F62DE633DB009DC46E /* SharedClipboardClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SharedClipboardClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		098B20F62DE633DB009DC46E /* mpclipboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mpclipboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		098B20F82DE633DB009DC46E /* SharedClipboardClient */ = {
+		098B20F82DE633DB009DC46E /* mpclipboard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SharedClipboardClient;
+			path = mpclipboard;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		098B20ED2DE633DB009DC46E = {
 			isa = PBXGroup;
 			children = (
-				098B20F82DE633DB009DC46E /* SharedClipboardClient */,
+				098B20F82DE633DB009DC46E /* mpclipboard */,
 				098B20F72DE633DB009DC46E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		098B20F72DE633DB009DC46E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				098B20F62DE633DB009DC46E /* SharedClipboardClient.app */,
+				098B20F62DE633DB009DC46E /* mpclipboard.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		098B20F52DE633DB009DC46E /* SharedClipboardClient */ = {
+		098B20F52DE633DB009DC46E /* mpclipboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 098B21052DE633DC009DC46E /* Build configuration list for PBXNativeTarget "SharedClipboardClient" */;
+			buildConfigurationList = 098B21052DE633DC009DC46E /* Build configuration list for PBXNativeTarget "mpclipboard" */;
 			buildPhases = (
 				098B20F22DE633DB009DC46E /* Sources */,
 				098B20F32DE633DB009DC46E /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				098B20F82DE633DB009DC46E /* SharedClipboardClient */,
+				098B20F82DE633DB009DC46E /* mpclipboard */,
 			);
-			name = SharedClipboardClient;
+			name = mpclipboard;
 			packageProductDependencies = (
 			);
-			productName = SharedClipboardClient;
-			productReference = 098B20F62DE633DB009DC46E /* SharedClipboardClient.app */;
+			productName = MPClipboard;
+			productReference = 098B20F62DE633DB009DC46E /* mpclipboard.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 098B20F12DE633DB009DC46E /* Build configuration list for PBXProject "SharedClipboardClient" */;
+			buildConfigurationList = 098B20F12DE633DB009DC46E /* Build configuration list for PBXProject "mpclipboard" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				098B20F52DE633DB009DC46E /* SharedClipboardClient */,
+				098B20F52DE633DB009DC46E /* mpclipboard */,
 			);
 		};
 /* End PBXProject section */
@@ -242,12 +242,13 @@
 		098B21062DE633DC009DC46E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SharedClipboardClient/SharedClipboardClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = mpclipboard/mpclipboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SharedClipboardClient/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"mpclipboard/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -265,16 +266,17 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/SharedClipboardClient",
+					"$(PROJECT_DIR)/mpclipboard",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.local.SharedClipboardClient;
+				OTHER_LDFLAGS = "mpclipboard-generic-client/libmpclipboard_generic_client.a";
+				PRODUCT_BUNDLE_IDENTIFIER = org.mpclipboard.MPClipboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/SharedClipboardClient/BridgingHeader.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/mpclipboard/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 2.2;
@@ -284,12 +286,13 @@
 		098B21072DE633DC009DC46E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SharedClipboardClient/SharedClipboardClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = mpclipboard/mpclipboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SharedClipboardClient/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"mpclipboard/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -307,16 +310,18 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/SharedClipboardClient",
+					"$(PROJECT_DIR)/mpclipboard",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.local.SharedClipboardClient;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "mpclipboard-generic-client/libmpclipboard_generic_client.a";
+				PRODUCT_BUNDLE_IDENTIFIER = org.mpclipboard.MPClipboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/SharedClipboardClient/BridgingHeader.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/mpclipboard/BridgingHeader.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 2.2;
@@ -326,7 +331,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		098B20F12DE633DB009DC46E /* Build configuration list for PBXProject "SharedClipboardClient" */ = {
+		098B20F12DE633DB009DC46E /* Build configuration list for PBXProject "mpclipboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				098B21032DE633DC009DC46E /* Debug */,
@@ -335,7 +340,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		098B21052DE633DC009DC46E /* Build configuration list for PBXNativeTarget "SharedClipboardClient" */ = {
+		098B21052DE633DC009DC46E /* Build configuration list for PBXNativeTarget "mpclipboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				098B21062DE633DC009DC46E /* Debug */,

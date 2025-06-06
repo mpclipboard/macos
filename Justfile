@@ -1,35 +1,27 @@
-arm64only := "ARCHS=arm64 ONLY_ACTIVE_ARCH=yes"
+sync-header:
+    @just download mpclipboard-generic-client.h mpclipboard/mpclipboard-generic-client.h
 
-build configuration lib:
-    xcodebuild OTHER_LDFLAGS="{{lib}}" -configuration {{configuration}} {{arm64only}}
-run configuration:
-    ./build/{{configuration}}/SharedClipboardClient.app/Contents/MacOS/SharedClipboardClient
-
-build-debug lib:
-    @just build Debug "{{lib}}"
-run-debug:
-    @just run Debug
-
-build-release lib:
-    @just build Release "{{lib}}"
-run-release:
-    @just run Release
-
-generic_gh_repo_url := "https://github.com/iliabylich/shared-clipboard-client-generic"
-base_release_url := generic_gh_repo_url + "/releases/download/latest"
-download-artifact filename out:
-    wget -q "{{base_release_url}}/{{filename}}" -O {{out}}
-
-ci-build:
+sync-lib:
     rm -f aarch64-apple-darwin.tar.gz
-    @just download-artifact aarch64-apple-darwin.tar.gz aarch64-apple-darwin.tar.gz
-    rm -rf shared-clipboard-generic-client
+    @just download aarch64-apple-darwin.tar.gz aarch64-apple-darwin.tar.gz
+    rm -rf mpclipboard-generic-client
     tar xvzf aarch64-apple-darwin.tar.gz
 
-    @just build-release shared-clipboard-generic-client/libshared_clipboard_client_generic.a
+# configuration is either "Debug" or "Release"
+build configuration:
+    xcodebuild -configuration {{configuration}}
+run configuration:
+    ./build/{{configuration}}/mpclipboard.app/Contents/MacOS/mpclipboard
 
-    cd build/Release && zip -r SharedClipboardClient.app.zip SharedClipboardClient.app
-    mv build/Release/SharedClipboardClient.app.zip .
+gh_repo_url := "https://github.com/mpclipboard/generic-client"
+download filename out:
+    wget -q "{{gh_repo_url}}/releases/download/latest/{{filename}}" -O {{out}}
 
-sync-header:
-    @just download-artifact shared-clipboard-client-generic.h SharedClipboardClient/shared-clipboard-client-generic.h
+ci-build:
+    @just sync-lib
+    @just build Release
+
+    cd build/Release && zip -r mpclipboard.app.zip mpclipboard.app
+    mv build/Release/mpclipboard.app.zip .
+
+

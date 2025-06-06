@@ -24,16 +24,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         buildMenu()
         startClipboardPolling()
-    
-        shared_clipboard_setup()
-        let config = shared_clipboard_config_read_from_xdg_config_dir()
+
+        mpclipboard_setup()
+        let config = mpclipboard_config_read_from_xdg_config_dir()
         if config == nil {
             fputs("failed to read config, exiting...", stderr)
             NSApp.terminate(self)
         }
-        shared_clipboard_start_thread(config)
+        mpclipboard_start_thread(config)
 
-        startSharedClipboardThreadPolling()
+        startPolling()
     }
 
     func buildMenu() {
@@ -50,7 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc
     func quit() {
-        shared_clipboard_stop_thread()
+        mpclipboard_stop_thread()
         print("Quitting...")
         NSApp.terminate(self)
     }
@@ -63,7 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if let copiedText = pasteboard.string(forType: .string) {
                     copiedText.withCString { cString in
                         let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self)
-                        shared_clipboard_send(ptr)
+                        mpclipboard_send(ptr)
                     }
                 }
             }
@@ -72,9 +72,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         RunLoop.main.add(clipboardTimer!, forMode: .common)
     }
 
-    func startSharedClipboardThreadPolling() {
+    func startPolling() {
         pollingTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [self] _ in
-            let output = shared_clipboard_poll()
+            let output = mpclipboard_poll()
             if let connectivityPtr = output.connectivity {
                 let connectivity = connectivityPtr.pointee == true
                 free(connectivityPtr)
