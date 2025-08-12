@@ -15,7 +15,7 @@ run configuration:
 
 gh_repo_url := "https://github.com/mpclipboard/generic-client"
 download filename out:
-    wget -q "{{gh_repo_url}}/releases/download/latest/{{filename}}" -O {{out}}
+    wget -q "{{gh_repo_url}}/releases/download/v0.1.0/{{filename}}" -O {{out}}
 
 ci-build:
     @just sync
