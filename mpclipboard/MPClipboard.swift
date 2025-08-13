@@ -5,14 +5,8 @@ class MPClipboard {
     var store: OpaquePointer?
     var app: NSApplicationDelegate
 
-    enum Event {
-        case ConnectivityChanged(connected: Bool)
-        case NewClip(clip: Clip)
-    }
-
     init(app: NSApplicationDelegate) {
-        mpclipboard_logger_init()
-        mpclipboard_tls_init()
+        mpclipboard_init()
 
 #if DEBUG
         print("Debug build, using local config")
@@ -21,7 +15,6 @@ class MPClipboard {
         print("Release build, using config from XDG dir")
         var option = MPCLIPBOARD_CONFIG_READ_OPTION_T_FROM_XDG_CONFIG_DIR
 #endif
-
 
         self.app = app
 
@@ -43,37 +36,35 @@ class MPClipboard {
         mpclipboard_handle_stop(handle)
     }
 
-    func send(text: String) {
+    func send(text: String) -> Bool {
         text.withCString { cString in
             let ptr: UnsafePointer<UInt8> = UnsafeRawPointer(cString).assumingMemoryBound(to: UInt8.self)
-            mpclipboard_handle_send(handle, ptr)
+            return mpclipboard_handle_send(handle, ptr)
         }
     }
 
-    func pollOnce() -> Array<Event> {
-        var events: Array<Event> = []
+    func pollOnce() -> (String?, Bool?) {
         var output = mpclipboard_handle_poll(handle)
+        var text: String? = nil
+        var connected: Bool? = nil
 
-        if let clipPtr = output.clip {
-            let clip = Clip(ptr: clipPtr)
-            events.append(.NewClip(clip: clip))
+        if let textPtr = output.text {
+            text = String(cString: textPtr)
+            free(textPtr)
         }
 
         if let connectivityPtr = output.connectivity {
-            let connected = connectivityPtr.pointee == true
-            events.append(.ConnectivityChanged(connected: connected))
+            connected = connectivityPtr.pointee == true
             free(connectivityPtr)
         }
 
-        return events
+        return (text, connected)
     }
 
-    func startPolling(onEvent: @escaping (Event) -> Void) -> Timer {
+    func startPolling(onEvent: @escaping ((String?, Bool?)) -> Void) -> Timer {
         return Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { [self] _ in
-            let events = pollOnce()
-            for event in events {
-                onEvent(event)
-            }
+            let polled = pollOnce()
+            onEvent(polled)
         })
     }
 }
