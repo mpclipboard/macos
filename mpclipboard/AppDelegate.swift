@@ -1,6 +1,7 @@
 import Cocoa
 import Carbon
 import SwiftUI
+import UserNotifications
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var mpclipboard: MPClipboard?
@@ -15,6 +16,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Hide Dock icon
         NSApp.setActivationPolicy(.accessory)
 
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { granted, error in
+            if granted {
+                print("Got permission to send notifications")
+            } else {
+                print("Failed to get permission to send notifications")
+                if let error = error {
+                    print("Error showing notification: \(error)")
+                }
+            }
+        }
+
         mpclipboard = MPClipboard(app: self)
         mpclipboardTimer = mpclipboard?.startPolling(onEvent: { [self] (text, connected) in
             if let connected = connected {
@@ -23,6 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let text = text {
                 clipboard.writeText(text: text)
                 tray.pushReceived(text: text)
+                showNotification(text: text)
             }
         })
 
@@ -43,5 +56,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.mpclipboardTimer?.invalidate()
         self.mpclipboard?.stop()
         NSApp.terminate(self)
+    }
+
+    func showNotification(text: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "MPClipboard"
+        content.body = text
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error showing notification: \(error)")
+            }
+        }
     }
 }
